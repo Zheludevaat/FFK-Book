@@ -1,0 +1,9 @@
+[openai]
+api_key = "sk-your-key"
+organization = ""
+
+[models]
+code_pro = "gpt-4.1-code-pro-2025-07"
+long_1M = "gpt-4.1-long-1M"
+review_64k = "gpt-4.1-review-64k"
+fast_8k = "gpt-4.1-fast-8k"
