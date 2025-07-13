@@ -1,0 +1,163 @@
+chapters:
+  - id: 0
+    title: "Preface"
+    target_words: 1500
+    summary: |
+      Set the tone with an inclusive framing note welcoming all backgrounds.
+      Explain how to use the book and offer warnings and hopes about the
+      study of Kabbalah.
+    parts: 2
+    closing_story: "A brief tale about hidden wisdom revealed in unlikely places."
+  - id: 1
+    title: "Introduction"
+    target_words: 2800
+    summary: |
+      Define Kabbalah, dispel misconceptions, and outline why the subject
+      matters today. Describe what counts as authentic Kabbalah and the
+      evidence-based, humorous approach of the book.
+    parts: 2
+    closing_story: "Moses argues with the burning bush about destiny and doubt."
+  - id: 2
+    title: "The Kabbalistic Cosmos—Maps and Legends"
+    target_words: 2900
+    summary: |
+      Introduce Ein Sof, the Sefirot, and creation narratives. Explain the
+      four worlds and provide a practical map of the Tree of Life.
+    parts: 2
+    closing_story: "A playful midrash on how the angels argued over the design of the cosmos."
+  - id: 3
+    title: "Historical Rivers—From Ancient Roots to Lurianic Kabbalah"
+    target_words: 2900
+    summary: |
+      Trace early esotericism through the Zoharic revolution and the Lurianic
+      system. Cover modern currents and provide a historical timeline figure.
+    parts: 2
+    closing_story: "A wandering mystic survives exile and sparks a new tradition." 
+  - id: 4
+    title: "Language, Paradox, and Symbol—How Kabbalah Speaks"
+    target_words: 2900
+    summary: |
+      Explore symbolic logic, Hebrew letter mysticism, and the role of paradox
+      and secret in Kabbalistic language.
+    parts: 2
+    closing_story: "Rabbi Akiva marvels at the tiny crowns atop Hebrew letters." 
+  - id: 5
+    title: "Sefirot—The Tenfold Anatomy of Being"
+    target_words: 2900
+    summary: |
+      Detail each Sefirah, its cosmic and psychological role, and gendered
+      symbolism. Include diagrams of the Sefirotic tree and correspondences.
+    parts: 2
+    closing_story: "A medieval sage maps the ten lights onto the contours of the soul." 
+  - id: 6
+    title: "The Four Worlds—Vertical Hierarchies"
+    target_words: 2900
+    summary: |
+      Explain Atzilut, Beriah, Yetzirah, and Assiyah, their inhabitants, and
+      how divine flow is channelled downward.
+    parts: 2
+    closing_story: "A mystic climbs through all four realms during one fervent prayer." 
+  - id: 7
+    title: "The Partzufim—Divine Faces, Human Mirrors"
+    target_words: 2900
+    summary: |
+      Introduce the Lurianic partzufim, their familial relationships, and
+      parallels in developmental psychology.
+    parts: 2
+    closing_story: "The divine family debates its roles in a strangely human quarrel." 
+  - id: 8
+    title: "Tzimtzum, Shevirah, Tikkun—Creation, Crisis, Repair"
+    target_words: 2900
+    summary: |
+      Discuss the divine withdrawal, the shattering of the vessels, and the
+      ongoing work of tikkun olam, with schematics of shattering and repair.
+    parts: 2
+    closing_story: "Shattered vessels lament their fate and hint at ongoing repair." 
+  - id: 9
+    title: "The Anatomy of the Soul"
+    target_words: 2900
+    summary: |
+      Outline the five levels of the soul, concepts of reincarnation, and the
+      mind–body connection with integration diagrams.
+    parts: 2
+    closing_story: "A Hasidic tale of a soul swooping down like a bird and returning changed." 
+  - id: 10
+    title: "Mystical Practice—Prayer, Meditation, and Ritual"
+    target_words: 2900
+    summary: |
+      Cover kavanah, meditation techniques, prayer as tikkun, and embodied
+      practice with practical try-this boxes.
+    parts: 2
+    closing_story: "A traveler discovers his whispered prayer rearranged the worlds." 
+  - id: 11
+    title: "Ethics, Responsibility, and Everyday Mysticism"
+    target_words: 2900
+    summary: |
+      Show how tikkun applies to daily life, discuss virtues, and weigh modern
+      dilemmas where love and judgment interact.
+    parts: 2
+    closing_story: "A market dispute forces a rabbi to weigh judgment against compassion." 
+  - id: 12
+    title: "Evil, Sitra Achra, and the Mystery of Opposites"
+    target_words: 2900
+    summary: |
+      Examine qlippot, demons, and the necessity of evil within the Kabbalistic
+      worldview. Offer practical safeguards and healthy skepticism.
+    parts: 2
+    closing_story: "A brief dialogue with the Sitra Achra about its unwelcome duties." 
+  - id: 13
+    title: "Gender, Body, and the Divine Feminine"
+    target_words: 2900
+    summary: |
+      Explore the Shekhinah, concepts of androgyny, and sexuality as pathways to
+      the infinite.
+    parts: 2
+    closing_story: "The Shekhinah strolls through a modern city disguised among the crowd." 
+  - id: 14
+    title: "Prophecy, Mystical Experience, and States of Consciousness"
+    target_words: 2900
+    summary: |
+      Survey Kabbalistic methods for prophecy, dreamwork, and ecstatic states,
+      plus modern parallels like psychedelics and neuro-Kabbalah.
+    parts: 2
+    closing_story: "An ecstatic visionary seeks a physician's approval." 
+  - id: 15
+    title: "Magic, Theurgy, and the Ethics of Power"
+    target_words: 2900
+    summary: |
+      Address angelic names, theurgy, and ethical boundaries around mystical
+      power and modern misuses.
+    parts: 2
+    closing_story: "A magician regrets calling on angels without counting the cost." 
+  - id: 16
+    title: "Kabbalah and Philosophy—Language, Infinity, and Nothingness"
+    target_words: 2900
+    summary: |
+      Explore language mysticism, philosophical resonances of infinity, and the
+      concept of ayin (nothingness) with modern thinkers.
+    parts: 2
+    closing_story: "Philosophers argue infinity while a mystic quietly communes with ayin." 
+  - id: 17
+    title: "Science, Neuroscience, and Kabbalah"
+    target_words: 2900
+    summary: |
+      Examine brain science and cosmology alongside Kabbalah, noting parallels
+      and critical perspectives.
+    parts: 2
+    closing_story: "A neuroscientist dreams of Jacob's ladder and wakes inspired." 
+  - id: 18
+    title: "Kabbalah in the 21st Century—Revival, Commodification, and Authenticity"
+    target_words: 2900
+    summary: |
+      Review Hasidic renewal, neo-Kabbalah, academic perspectives, and global
+      spread. Discuss tests for authenticity.
+    parts: 2
+    closing_story: "A celebrity's flirtation with Kabbalah sparks a debate on authenticity." 
+  - id: 19
+    title: "A User’s Guide to Continuing—Practices, Study, and Community"
+    target_words: 2900
+    summary: |
+      Offer recommended practices, finding teachers, and further resources.
+      Conclude with encouragement to continue beyond the book.
+    parts: 2
+    closing_story: "The narrator imagines a final gathering of seekers planning their next steps." 
