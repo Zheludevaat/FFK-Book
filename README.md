@@ -3,6 +3,8 @@
 ## Introduction
 
 FFK-Book demonstrates a cloud-centric workflow for writing a long-form book using cooperating OpenAI agents. Research, drafting, reviewing, and updates are handled through a scripted pipeline so that every section remains stylistically consistent while facts stay current.
+
+This repository shows how a minimal set of Python scripts can coordinate multiple GPT‑4.1 agents to produce a complete manuscript. After filling out the chapter outline and voice rules, you simply run `python run_pipeline.py` to start generating drafts. Each run stores research notes, prompts, and Markdown output under version control, making it easy to review changes and iterate.
 The repository's main purpose is to show how a small set of agent scripts can build a manuscript end to end. Edit the outline and style files, provide an API key, and run one command to start generating chapters automatically. Every generated draft appears under `drafts/` for you to inspect and refine.
 Supporting documents in `docs/` describe the style guide, QA checklist, and the detailed chapter plan used by the automation.
 This repository offers a repeatable process: fill in `config/outline.yaml`, tweak the style guide, provide your API key, and run the pipeline to generate drafts automatically.
