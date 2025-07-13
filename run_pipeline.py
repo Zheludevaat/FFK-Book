@@ -181,10 +181,10 @@ def main():
 
     DRAFTS_DIR.mkdir(exist_ok=True)
     models = cfg.get('models', {})
-    research = ResearchAgent(client, models.get('fast_8k', 'gpt-4.1-fast-8k'))
-    prompter = PromptBuilder(client, models.get('code_pro', 'gpt-4.1-code-pro-2025-07'))
-    writer = DraftWriter(client, models.get('long_1M', 'gpt-4.1-long-1M'))
-    reviewer = ReviewerAgent(client, models.get('review_64k', 'gpt-4.1-review-64k'))
+    research = ResearchAgent(client, models.get('fast_8k', 'gpt-4.1'))
+    prompter = PromptBuilder(client, models.get('code_pro', 'gpt-4.1'))
+    writer = DraftWriter(client, models.get('long_1M', 'gpt-4.1'))
+    reviewer = ReviewerAgent(client, models.get('review_64k', 'gpt-4.1'))
     updater = UpdaterAgent(client)
 
     for ch in chapters:
