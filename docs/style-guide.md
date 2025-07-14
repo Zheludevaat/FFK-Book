@@ -36,7 +36,7 @@ Consult `voice-samples.md` for exemplar passages.
 
 ## Generation Protocol
 1. **Retrieve → Generate**: Only 01-Research may call the web.
-2. Drafters use prompts from 02-Prompt-Forge.
+2. Drafters use prompts from 02-Prompt-Forge and must follow `docs/prompt-checklist.md`.
 3. Insert figure call-outs `[Fig X]` inline; 06-Figure-Build creates assets.
 4. 04-QA-Edit must run the full `qa-checklist.md`.
 

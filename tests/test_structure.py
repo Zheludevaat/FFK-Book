@@ -8,6 +8,7 @@ def test_directories_exist():
         'drafts',
         'reviews',
         'data/chroma',
+        'drafts/summaries',
     ]:
         assert os.path.isdir(path)
 
