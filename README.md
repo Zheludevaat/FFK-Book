@@ -6,6 +6,7 @@ FFK-Book demonstrates a cloud-centric workflow for writing a long-form book usin
 FFK-Book is designed as a turnkey example for automating book writing. It integrates a research phase, prompt construction, narrative drafting, and automated reviews into a single pipeline so you can focus on editing rather than generating raw text.
 
 This repository shows how a minimal set of Python scripts can coordinate agents using the GPT‑4.1 model to produce a complete manuscript. After filling out the chapter outline and voice rules, you simply run `python run_pipeline.py` to start generating drafts. Each run stores research notes, prompts, and Markdown output under version control, making it easy to review changes and iterate.
+
 The repository's main purpose is to show how a small set of agent scripts can build a manuscript end to end. Edit the outline and style files, provide an API key, and run one command to start generating chapters automatically. Every generated draft appears under `drafts/` for you to inspect and refine.
 Supporting documents in `docs/` describe the style guide, QA checklist, and the detailed chapter plan used by the automation.
 This repository offers a repeatable process: fill in `config/outline.yaml`, tweak the style guide, provide your API key, and run the pipeline to generate drafts automatically.
@@ -59,8 +60,7 @@ For a graphical interface, run:
 python ui.py
 ```
 
-This window lets you enter your API key, adjust model names, and start the
-pipeline with a click.
+This window lets you enter your API key, adjust model names, toggle automatic rewrite or continuation behavior, and start the pipeline with a click.
 
 New drafts appear under `drafts/`. Before submitting any pull request, run the
 test suite to verify structure:
@@ -77,8 +77,9 @@ directories exist.
 The pipeline coordinates several agents, each using the GPT‑4.1 model, with distinct roles. A
 `ResearchAgent` gathers facts and citations, feeding a `PromptBuilder`
 that crafts the exact instruction set for the `DraftWriter`. Drafts are
-checked by a `ReviewerAgent`, optionally rewritten once, and then
-committed via an `UpdaterAgent` that updates cached embeddings. Token
+checked by a `ReviewerAgent`; if problems are found the `RewriterAgent`
+automatically applies one set of fixes before the user decides to
+proceed. Once accepted, an `UpdaterAgent` updates cached embeddings. Token
 budgets keep each call under half the model limits to avoid truncation.
 Summaries of each accepted draft are written to `drafts/summaries` and
 fed into future prompts for continuity. Once both parts of a chapter
@@ -95,11 +96,11 @@ Each chapter concludes with a short Kabbalistic or historical story. These vigne
 
 ## Project Structure
 
-- `config/` contains the outline, style guide, and OpenAI settings.
-- `drafts/` and `reviews/` hold generated sections and review diffs.
-- `drafts/summaries/` contains short recaps used for continuity.
-- `data/` caches research JSON and text embeddings.
-- `assets/` stores an image plan for later illustration work.
+* `config/` contains the outline, style guide, and OpenAI settings.
+* `drafts/` and `reviews/` hold generated sections and review diffs.
+* `drafts/summaries/` contains short recaps used for continuity.
+* `data/` caches research JSON and text embeddings.
+* `assets/` stores an image plan for later illustration work.
 
 ## Contribution Guidelines
 
