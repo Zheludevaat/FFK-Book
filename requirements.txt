@@ -1,3 +1,4 @@
 pyyaml
 toml
 openai
+tiktoken
