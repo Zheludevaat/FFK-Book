@@ -53,6 +53,15 @@ pipeline with:
 python run_pipeline.py
 ```
 
+For a graphical interface, run:
+
+```bash
+python ui.py
+```
+
+This window lets you enter your API key, adjust model names, and start the
+pipeline with a click.
+
 New drafts appear under `drafts/`. Before submitting any pull request, run the
 test suite to verify structure:
 
@@ -71,6 +80,14 @@ that crafts the exact instruction set for the `DraftWriter`. Drafts are
 checked by a `ReviewerAgent`, optionally rewritten once, and then
 committed via an `UpdaterAgent` that updates cached embeddings. Token
 budgets keep each call under half the model limits to avoid truncation.
+Summaries of each accepted draft are written to `drafts/summaries` and
+fed into future prompts for continuity. Once both parts of a chapter
+are complete, the `ReviewerAgent` performs a chapter checkpoint review
+to detect drift or contradictions.
+
+### Prompt Checklist
+
+Before building a drafting prompt, review the [prompt checklist](docs/prompt-checklist.md) to ensure all required elements are present.
 
 ## Closing Stories
 
@@ -80,6 +97,7 @@ Each chapter concludes with a short Kabbalistic or historical story. These vigne
 
 - `config/` contains the outline, style guide, and OpenAI settings.
 - `drafts/` and `reviews/` hold generated sections and review diffs.
+- `drafts/summaries/` contains short recaps used for continuity.
 - `data/` caches research JSON and text embeddings.
 - `assets/` stores an image plan for later illustration work.
 
