@@ -9,6 +9,7 @@ from pathlib import Path
 
 CONFIG_DIR = Path('config')
 DRAFTS_DIR = Path('drafts')
+SUMMARY_DIR = DRAFTS_DIR / 'summaries'
 
 
 def load_outline():
@@ -78,8 +79,7 @@ class PromptBuilder:
         self.client = client
         self.model = model
 
-    def run(self, research, style, chapter, part: int, final_part: bool):
-        print(f"[PromptBuilder] Creating prompt for chapter {chapter['id']} part {part}")
+    def run(self, research, style, chapter, part: int, final_part: bool, summaries: str = ""):
         messages = [
             {"role": "system", "content": "You craft writing prompts."},
             {
@@ -89,17 +89,31 @@ class PromptBuilder:
                     f"and these research notes:\n{research['facts']}\n"
                     f"Create concise instructions for drafting part {part} of chapter '{chapter['title']}'.\n"
                     + (f"Closing story: {chapter.get('closing_story','')}" if final_part else "")
+                    + (f"\nContext summaries:\n{summaries}" if summaries else "")
                 ),
             },
         ]
+        import tiktoken
         try:
-            resp = self.client.chat.completions.create(
-                model=self.model, messages=messages, max_tokens=400
-            )
-            return resp.choices[0].message.content
-        except Exception as e:
-            print(f"Prompt error: {e}")
-            return "Draft the chapter using provided facts"
+            enc = tiktoken.encoding_for_model(self.model)
+        except Exception:
+            enc = tiktoken.get_encoding("cl100k_base")
+        tokens = sum(len(enc.encode(m["content"])) for m in messages)
+        if tokens > 400:
+            over = tokens - 400
+            facts_tokens = enc.encode(research["facts"])
+            if over < len(facts_tokens):
+                trimmed = enc.decode(facts_tokens[:-over])
+            else:
+                trimmed = ""
+            messages[1]["content"] = messages[1]["content"].replace(research["facts"], trimmed)
+            tokens = sum(len(enc.encode(m["content"])) for m in messages)
+            if tokens > 400:
+                print(f"[PromptBuilder] warning: prompt still {tokens} tokens")
+        resp = self.client.chat.completions.create(
+            model=self.model, messages=messages, max_tokens=400
+        )
+        return resp.choices[0].message.content
 
 
 class DraftWriter:
@@ -125,18 +139,45 @@ class DraftWriter:
         return path
 
 
-class ReviewerAgent:
+class SummarizerAgent:
     def __init__(self, client, model: str):
         self.client = client
         self.model = model
 
     def run(self, draft_path):
+        print(f"[Summarizer] Summarizing {draft_path}")
+        text = draft_path.read_text()
+        messages = [
+            {"role": "system", "content": "You create concise summaries."},
+            {"role": "user", "content": f"Summarize in about 400 words:\n{text}"},
+        ]
+        try:
+            resp = self.client.chat.completions.create(
+                model=self.model, messages=messages, max_tokens=512
+            )
+            summary = resp.choices[0].message.content
+        except Exception as e:
+            print(f"Summary error: {e}")
+            summary = text[:400]
+        SUMMARY_DIR.mkdir(parents=True, exist_ok=True)
+        out_path = SUMMARY_DIR / f"{draft_path.stem}.summary.md"
+        out_path.write_text(summary)
+        return out_path
+
+
+class ReviewerAgent:
+    def __init__(self, client, model: str):
+        self.client = client
+        self.model = model
+
+    def run(self, draft_path, prompt_user=input):
         print(f"[Reviewer] Checking {draft_path}")
         content = draft_path.read_text()
         messages = [
             {"role": "system", "content": "You review drafts for style and facts."},
             {"role": "user", "content": content},
         ]
+        verdict = ""
         try:
             resp = self.client.chat.completions.create(
                 model=self.model, messages=messages, max_tokens=1600
@@ -144,7 +185,42 @@ class ReviewerAgent:
             verdict = resp.choices[0].message.content
             print(verdict)
         except Exception as e:
+            verdict = f"ERROR: {e}"
             print(f"Review error: {e}")
+        text = verdict.lower()
+        approved = any(k in text for k in ["accept", "approve", "pass"])
+        if not approved:
+            answer = prompt_user("Reviewer flagged issues. Continue anyway? [y/N] ")
+            return answer.strip().lower().startswith("y")
+        return True
+
+    def chapter_checkpoint(self, chapter_id, parts, prompt_user=input):
+        print(f"[Reviewer] Chapter {chapter_id} checkpoint")
+        texts = []
+        for p in parts:
+            path = DRAFTS_DIR / f"section_{chapter_id:03d}_part{p}.md"
+            if path.exists():
+                texts.append(path.read_text())
+        if not texts:
+            return False
+        content = "\n\n".join(texts)
+        messages = [
+            {"role": "system", "content": "Check the chapter for drift or contradictions."},
+            {"role": "user", "content": content},
+        ]
+        verdict = ""
+        try:
+            resp = self.client.chat.completions.create(
+                model=self.model, messages=messages, max_tokens=1600
+            )
+            verdict = resp.choices[0].message.content
+            print(verdict)
+        except Exception as e:
+            verdict = f"ERROR: {e}"
+            print(f"Chapter review error: {e}")
+        if "error" in verdict.lower() or "fail" in verdict.lower() or "reject" in verdict.lower():
+            ans = prompt_user("Checkpoint issues detected. Continue? [y/N] ")
+            return ans.strip().lower().startswith("y")
         return True
 
 
@@ -162,18 +238,20 @@ class UpdaterAgent:
             out_dir.mkdir(parents=True, exist_ok=True)
             out_file = out_dir / f"{draft_path.stem}.json"
             out_file.write_text(json.dumps({'embedding': vec}, indent=2))
+            return out_file
         except Exception as e:
             print(f"Embedding error: {e}")
+            return None
 
 
-def main():
+def main(prompt_fn=input):
     outline = load_outline()
     style = load_style()
     cfg = load_openai_config()
     env_key = os.getenv('OPENAI_API_KEY')
     api_key = env_key or cfg['api_key']
     if not api_key or api_key == 'sk-your-key':
-        api_key = input('Enter your OpenAI API key: ').strip()
+        api_key = prompt_fn('Enter your OpenAI API key: ').strip()
     org = cfg.get('organization') or None
     client = openai.OpenAI(api_key=api_key, organization=org)
     chapters = outline.get('chapters', [])
@@ -186,17 +264,31 @@ def main():
     writer = DraftWriter(client, models.get('long_1M', 'gpt-4.1'))
     reviewer = ReviewerAgent(client, models.get('review_64k', 'gpt-4.1'))
     updater = UpdaterAgent(client)
+    summarizer = SummarizerAgent(client, models.get('fast_8k', 'gpt-4.1'))
+    SUMMARY_DIR.mkdir(exist_ok=True)
+    chapter_summaries = {}
 
     for ch in chapters:
         parts = ch.get('parts', 1)
+        this_summaries = []
         for part in range(1, parts + 1):
+            prior = "\n\n".join(chapter_summaries.get(cid, "") for cid in sorted(chapter_summaries))
+            if this_summaries:
+                prior = (prior + "\n\n" if prior else "") + "\n\n".join(this_summaries)
             print(f"\nProcessing Chapter {ch['id']} Part {part}: {ch['title']}")
             res = research.run(ch, part)
             final_part = part == parts
-            prompt = prompter.run(res, style, ch, part, final_part)
+            prompt = prompter.run(res, style, ch, part, final_part, prior)
             draft_path = writer.run(prompt, ch['id'], part)
-            if reviewer.run(draft_path):
-                updater.run(draft_path)
+            if reviewer.run(draft_path, prompt_fn):
+                emb_path = updater.run(draft_path)
+                if emb_path:
+                    print(f"[Updater] Wrote {emb_path}")
+                sum_path = summarizer.run(draft_path)
+                this_summaries.append(sum_path.read_text())
+        chapter_summaries[ch['id']] = "\n\n".join(this_summaries)
+        if parts > 1:
+            reviewer.chapter_checkpoint(ch['id'], list(range(1, parts + 1)), prompt_fn)
 
 
 
