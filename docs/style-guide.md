@@ -41,7 +41,6 @@ Consult `voice-samples.md` for exemplar passages.
 4. 04-QA-Edit must run the full `qa-checklist.md`.
 
 ### Agent Roles and Token Budgets
-
 | Agent | Model | **Max output / call** | Rationale |
 |-------|-------|-----------------------|-----------|
 | **ResearchAgent** | `gpt-4.1` | **2 048 tokens ≈ 1 500 words** | Generates a rich fact bundle, web-sourced citations, and image descriptions while sitting well below the 8 k cap. |
@@ -50,6 +49,7 @@ Consult `voice-samples.md` for exemplar passages.
 | **ReviewerAgent** | `gpt-4.1` | **1 600 tokens ≈ 1 200 words** | Produces `review.diff` plus human-readable rationale without nearing limits. |
 | **Rewriter** | `gpt-4.1` | **4 096 tokens** | Mirrors DraftWriter to regenerate a full section if required. |
 | **UpdaterAgent** | `gpt-4.1` | **800 tokens ≈ 600 words** | Enough for YAML/Markdown patches and a change log. |
+
 
 Loop-guard: Reviewer issues one correction cycle → Rewriter regenerates → Reviewer performs a ≤600-token post-check and returns pass/fail summary only. Further loops need explicit user approval.
 
