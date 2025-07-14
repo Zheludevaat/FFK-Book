@@ -1,3 +1,4 @@
+```python
 import os
 import threading
 import io
@@ -16,25 +17,31 @@ class PipelineUI:
         self.master = master
         master.title("FFK Book Pipeline")
 
+        # Apply a modern theme if available
         style = ttk.Style(master)
         if "clam" in style.theme_names():
             style.theme_use("clam")
 
+        # Main layout frame
         frame = ttk.Frame(master, padding=10)
         frame.grid(row=0, column=0, sticky="nsew")
         master.columnconfigure(0, weight=1)
         master.rowconfigure(0, weight=1)
 
         row = 0
+        # API Key
         ttk.Label(frame, text="OpenAI API Key:").grid(row=row, column=0, sticky="e")
         self.api_key = ttk.Entry(frame, show="*", width=50)
         self.api_key.grid(row=row, column=1, sticky="w")
         row += 1
+
+        # Organization
         ttk.Label(frame, text="Organization:").grid(row=row, column=0, sticky="e")
         self.org = ttk.Entry(frame, width=50)
         self.org.grid(row=row, column=1, sticky="w")
         row += 1
 
+        # Model configuration entries
         self.model_vars = {}
         for name in ["code_pro", "long_1M", "review_64k", "fast_8k"]:
             ttk.Label(frame, text=f"Model {name}:").grid(row=row, column=0, sticky="e")
@@ -43,25 +50,46 @@ class PipelineUI:
             self.model_vars[name] = entry
             row += 1
 
+        # UI behavior toggles
         self.auto_rewrite = tk.BooleanVar(value=False)
-        ttk.Checkbutton(frame, text="Auto rewrite flagged drafts", variable=self.auto_rewrite).grid(row=row, column=0, columnspan=2, sticky="w")
-        row += 1
-        self.auto_continue_draft = tk.BooleanVar(value=False)
-        ttk.Checkbutton(frame, text="Auto continue after rewrite", variable=self.auto_continue_draft).grid(row=row, column=0, columnspan=2, sticky="w")
-        row += 1
-        self.auto_continue_checkpoint = tk.BooleanVar(value=False)
-        ttk.Checkbutton(frame, text="Auto continue on checkpoint issues", variable=self.auto_continue_checkpoint).grid(row=row, column=0, columnspan=2, sticky="w")
+        ttk.Checkbutton(
+            frame,
+            text="Auto rewrite flagged drafts",
+            variable=self.auto_rewrite
+        ).grid(row=row, column=0, columnspan=2, sticky="w")
         row += 1
 
-        ttk.Button(frame, text="Run Pipeline", command=self.run_pipeline).grid(row=row, column=0, pady=5)
-        ttk.Button(frame, text="Save Settings", command=self.save_settings).grid(row=row, column=1, pady=5)
+        self.auto_continue_draft = tk.BooleanVar(value=False)
+        ttk.Checkbutton(
+            frame,
+            text="Auto continue after rewrite",
+            variable=self.auto_continue_draft
+        ).grid(row=row, column=0, columnspan=2, sticky="w")
         row += 1
+
+        self.auto_continue_checkpoint = tk.BooleanVar(value=False)
+        ttk.Checkbutton(
+            frame,
+            text="Auto continue on checkpoint issues",
+            variable=self.auto_continue_checkpoint
+        ).grid(row=row, column=0, columnspan=2, sticky="w")
+        row += 1
+
+        # Action buttons
+        ttk.Button(frame, text="Run Pipeline", command=self.run_pipeline)
+        .grid(row=row, column=0, pady=5)
+        ttk.Button(frame, text="Save Settings", command=self.save_settings)
+        .grid(row=row, column=1, pady=5)
+        row += 1
+
+        # Log output
         self.log = scrolledtext.ScrolledText(frame, width=80, height=20)
         self.log.grid(row=row, column=0, columnspan=2)
 
         self.load_settings()
 
     def ask_user(self, prompt: str) -> str:
+        # Automatic responses based on UI toggles
         if "Apply automatic rewrite" in prompt:
             return "y" if self.auto_rewrite.get() else "n"
         if "Continue anyway" in prompt:
@@ -70,6 +98,7 @@ class PipelineUI:
             return "y" if self.auto_continue_checkpoint.get() else "n"
         if "Enter your OpenAI API key" in prompt:
             return simpledialog.askstring("API Key", prompt, show="*") or ""
+        # Default yes/no dialog
         return "y" if messagebox.askyesno("Pipeline Question", prompt) else "n"
 
     def load_settings(self):
@@ -112,8 +141,7 @@ class PipelineUI:
             buf = io.StringIO()
             with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
                 run_pipeline.main(prompt_fn=self.ask_user)
-            output = buf.getvalue()
-            self.log.insert(tk.END, output)
+            self.log.insert(tk.END, buf.getvalue())
 
         threading.Thread(target=target, daemon=True).start()
 
@@ -126,3 +154,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+```
