@@ -41,15 +41,15 @@ Consult `voice-samples.md` for exemplar passages.
 4. 04-QA-Edit must run the full `qa-checklist.md`.
 
 ### Agent Roles and Token Budgets
+| Agent | Model | **Max output / call** | Rationale |
+|-------|-------|-----------------------|-----------|
+| **ResearchAgent** | `gpt-4.1` | **2 048 tokens ≈ 1 500 words** | Generates a rich fact bundle, web-sourced citations, and image descriptions while sitting well below the 8 k cap. |
+| **PromptBuilder** | `gpt-4.1` | **400 tokens ≈ 300 words** | Emits a concise, precise drafting prompt + JSON tool calls; larger output adds no value. |
+| **DraftWriter** | `gpt-4.1` | **4 096 tokens ≈ 3 000 words** | Delivers robust section prose yet leaves half of allowed output unused to dodge truncation. |
+| **ReviewerAgent** | `gpt-4.1` | **1 600 tokens ≈ 1 200 words** | Produces `review.diff` plus human-readable rationale without nearing limits. |
+| **Rewriter** | `gpt-4.1` | **4 096 tokens** | Mirrors DraftWriter to regenerate a full section if required. |
+| **UpdaterAgent** | `gpt-4.1` | **800 tokens ≈ 600 words** | Enough for YAML/Markdown patches and a change log. |
 
-| Agent | 4.1 Variant | **Max output / call** | Rationale |
-|-------|-------------|-----------------------|-----------|
-| **ResearchAgent** | `gpt-4.1-long-1M` | **2 048 tokens ≈ 1 500 words** | Generates a rich fact bundle, web-sourced citations, and image descriptions while sitting well below the 8 k cap. |
-| **PromptBuilder** | `gpt-4.1-code-pro` | **400 tokens ≈ 300 words** | Emits a concise, precise drafting prompt + JSON tool calls; larger output adds no value. |
-| **DraftWriter** | `gpt-4.1-long-1M` | **4 096 tokens ≈ 3 000 words** | Delivers robust section prose yet leaves half of allowed output unused to dodge truncation. |
-| **ReviewerAgent** | `gpt-4.1-review-64k` | **1 600 tokens ≈ 1 200 words** | Produces `review.diff` plus human-readable rationale without nearing limits. |
-| **Rewriter** | `gpt-4.1-long-1M` | **4 096 tokens** | Mirrors DraftWriter to regenerate a full section if required. |
-| **UpdaterAgent** | `gpt-4.1-code-pro` | **800 tokens ≈ 600 words** | Enough for YAML/Markdown patches and a change log. |
 
 Loop-guard: Reviewer issues one correction cycle → Rewriter regenerates → Reviewer performs a ≤600-token post-check and returns pass/fail summary only. Further loops need explicit user approval.
 
